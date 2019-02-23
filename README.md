@@ -18,5 +18,5 @@ pip3 install beautifulsoup4
 ### Run
 
 ```
-python3 VPNBookConnect.py -c config_file.ovpn
+python3 VPNBookConnect.py -c config_file.ovpn -u (if running for the first time or auth fails)
 ```
