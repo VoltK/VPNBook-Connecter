@@ -10,6 +10,8 @@ import sys
 def check_args():
     parse = argparse.ArgumentParser()
     parse.add_argument('-c', '--config', help='VPNBook config file: -c config_file.ovpn')
+    parse.add_argument('-u', '--update', action='store_true', help='update credentials file: -u or --update')
+
 
     args_list = parse.parse_args()
 
@@ -62,6 +64,9 @@ def connect(vpn_file):
                 if "Initialization Sequence Completed" in output:
                     print("\n[+] Successfully connected to VPN. Opening Firefox")
                     subprocess.call(['firefox', 'whoer.net'])
+                elif "AUTH_FAILED" in output:
+                    print("\n[-] Failed to login. Need to update credentials. Run script with -u option.")
+                    break
 
     except KeyboardInterrupt:
         print("[!] Ctrl-C pressed. Terminate connection...")
@@ -72,16 +77,22 @@ def connect(vpn_file):
 def main():
     url = "https://www.vpnbook.com/"
 
-    config = check_args().config
-    if config is None:
+    print("[#] Welcome to VPNBookConnect. If you use this script for the first time you need to use --update option.")
+
+    arguments = check_args()
+    if arguments.config is None:
         sys.exit("[-] Error. You didn't specify openvpn config file.")
-    print(f"[!] Configuration file was specified: {config}")
+    if arguments.update:
+        print("[*] Update option was used.")
+        username, password = get_creds(url)
+        print(f'[+] username {username}\n[+] password: {password}')
+        save_creds(username, password)
+    else:
+        print("[*] Using existing credentials.")
 
-    username, password = get_creds(url)
-    print(f'[+] username {username}\n[+] password: {password}')
-    save_creds(username, password)
+    print(f"[!] Configuration file was specified: {arguments.config}")
 
-    connect(config)
+    connect(arguments.config)
 
 if __name__ == '__main__':
     main()
