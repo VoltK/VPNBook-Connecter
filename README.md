@@ -1,4 +1,4 @@
-# VPNBook-Connecter
+# VPNBook-Connector
 
 ## This script will connect you automatically to VPNBook OpenVPN without asking for credentials
 
